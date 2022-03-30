@@ -1,8 +1,12 @@
 package Flooring.Master.Main;
 
+import Flooring.Mastery.Controller.controller;
+
 public class App {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+       
+         controller con = new controller();
+         con.run();
     }
 }
