@@ -1,36 +1,32 @@
 package Flooring.Mastery.Dto;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class Order {
     
-    private String date;
-    private int OrderNumber;
+    private int orderNumber;
     private String customerName;
     private String state;
+    private BigDecimal taxRate = new BigDecimal("0");
     private String productType;
-    private String Area;
-    private String TaxRate;
-    private String CostPerSquareFoot;
-    private String LaborCostPerSquareFoot;
-    private String MaterialCost;
-    private String LaborCost;
-    private String Tax;
-    private String Total;
+    private BigDecimal area = new BigDecimal("0");
+    private BigDecimal costPerSquareFoot = new BigDecimal("0");
+    private BigDecimal laborCostPerSquareFoot = new BigDecimal("0");
+    private BigDecimal materialCost = new BigDecimal("0");
+    private BigDecimal laborCost = new BigDecimal("0");
+    private BigDecimal tax = new BigDecimal("0");
+    private BigDecimal total = new BigDecimal("0");
 
-    public Order(int OrderNumber) {
-        this.OrderNumber = OrderNumber;
+    //special contructor that takes in order number which in this program is auto generated
+    public void setOrderNumber(int orderNumber) {
+        this.orderNumber = orderNumber;
     }
+    
+    //getters/setters for each variable
+    
     public int getOrderNumber() {
-        return OrderNumber;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+        return orderNumber;
     }
 
     public String getCustomerName() {
@@ -49,77 +45,120 @@ public class Order {
         this.state = state;
     }
 
+    public BigDecimal getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(BigDecimal taxRate) {
+        this.taxRate = taxRate;
+    }
+
     public String getProductType() {
         return productType;
     }
 
-    public void setProductType(String priductType) {
-        this.productType = priductType;
+    public void setProductType(String productType) {
+        this.productType = productType;
     }
 
-    public String getArea() {
-        return Area;
+    public BigDecimal getArea() {
+        return area;
     }
 
-    public void setArea(String Area) {
-        this.Area = Area;
+    public void setArea(BigDecimal area) {
+        this.area = area;
     }
 
-    public String getTaxRate() {
-        return TaxRate;
+    public BigDecimal getCostPerSquareFoot() {
+        return costPerSquareFoot;
     }
 
-    public void setTaxRate(String TaxRate) {
-        this.TaxRate = TaxRate;
+    public void setCostPerSquareFoot(BigDecimal costPerSquareFoot) {
+        this.costPerSquareFoot = costPerSquareFoot;
     }
 
-    public String getCostPerSquareFoot() {
-        return CostPerSquareFoot;
+    public BigDecimal getLaborCostPerSquareFoot() {
+        return laborCostPerSquareFoot;
     }
 
-    public void setCostPerSquareFoot(String CostPerSquareFoot) {
-        this.CostPerSquareFoot = CostPerSquareFoot;
+    public void setLaborCostPerSquareFoot(BigDecimal laborCostPerSquareFoot) {
+        this.laborCostPerSquareFoot = laborCostPerSquareFoot;
     }
 
-    public String getLaborCostPerSquareFoot() {
-        return LaborCostPerSquareFoot;
+    public BigDecimal getMaterialCost() {
+        return materialCost;
     }
 
-    public void setLaborCostPerSquareFoot(String LaborCostPerSquareFoot) {
-        this.LaborCostPerSquareFoot = LaborCostPerSquareFoot;
+    public void setMaterialCost(BigDecimal materialCost) {
+        this.materialCost = materialCost;
     }
 
-    public String getMaterialCost() {
-        return MaterialCost;
+    public BigDecimal getLaborCost() {
+        return laborCost;
     }
 
-    public void setMaterialCost(String MaterialCost) {
-        this.MaterialCost = MaterialCost;
+    public void setLaborCost(BigDecimal laborCost) {
+        this.laborCost = laborCost;
     }
 
-    public String getLaborCost() {
-        return LaborCost;
+    public BigDecimal getTax() {
+        return tax;
     }
 
-    public void setLaborCost(String LaborCost) {
-        this.LaborCost = LaborCost;
+    public void setTax(BigDecimal tax) {
+        this.tax = tax;
     }
 
-    public String getTax() {
-        return Tax;
+    public BigDecimal getTotal() {
+        return total;
     }
 
-    public void setTax(String Tax) {
-        this.Tax = Tax;
-    }
-
-    public String getTotal() {
-        return Total;
-    }
-
-    public void setTotal(String Total) {
-        this.Total = Total;
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
     
+    
+    @Override
+    public String toString(){
+        return "Order Number: " + orderNumber + " Customer Name: " + customerName + " State: " + state + " Area: " + area + "sqft";
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + this.orderNumber;
+        hash = 17 * hash + Objects.hashCode(this.customerName);
+        hash = 17 * hash + Objects.hashCode(this.state);
+        hash = 17 * hash + Objects.hashCode(this.area);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Order other = (Order) obj;
+        if (this.orderNumber != other.orderNumber) {
+            return false;
+        }
+        if (!Objects.equals(this.customerName, other.customerName)) {
+            return false;
+        }
+        if (!Objects.equals(this.state, other.state)) {
+            return false;
+        }
+        if (!Objects.equals(this.area, other.area)) {
+            return false;
+        }
+        return true;
+    }
+
     
 }
