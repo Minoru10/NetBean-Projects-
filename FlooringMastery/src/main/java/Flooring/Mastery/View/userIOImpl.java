@@ -1,6 +1,9 @@
 package Flooring.Mastery.View;
 
 import java.math.BigDecimal;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class userIOImpl implements userIO{
@@ -66,6 +69,26 @@ public class userIOImpl implements userIO{
             num = this.readBigDecimal(prompt);
         }while (num.intValue() < min || num.intValue() > max);
         return num;
+    }
+
+    @Override
+    public String readDate(String prompt) {
+        
+        String date = readString(prompt);
+        LocalDate D2 = null;
+        try {
+            D2 = LocalDate.parse(date);
+        }catch (DateTimeException e){
+            this.print("Error: Enter a valid date format!!");
+        }
+        DateTimeFormatter formater = DateTimeFormatter.ofPattern("MMddyyyy");
+        String Date = formater.format(D2);
+        return "Orders_"+Date+".txt";
+    }
+
+    @Override
+    public String readFutureDate(String prompt) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

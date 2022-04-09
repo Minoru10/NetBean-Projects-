@@ -5,10 +5,16 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 
-public class Taxes {
+public class Tax {
     private String stateAbbrv;
     private String stateName;
     private BigDecimal TaxRate;
+
+    public Tax(String stateAbbrv, String stateName, BigDecimal TaxRate) {
+        this.stateAbbrv = stateAbbrv;
+        this.stateName = stateName;
+        this.TaxRate = TaxRate;
+    }
 
     public String getStateAbbrv() {
         return stateAbbrv;
@@ -59,7 +65,7 @@ public class Taxes {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Taxes other = (Taxes) obj;
+        final Tax other = (Tax) obj;
         if (!Objects.equals(this.stateAbbrv, other.stateAbbrv)) {
             return false;
         }

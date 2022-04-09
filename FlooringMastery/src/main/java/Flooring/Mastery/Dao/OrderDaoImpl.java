@@ -1,96 +1,88 @@
 package Flooring.Mastery.Dao;
 
 import Flooring.Mastery.Dto.Order;
+import Flooring.Mastery.ServiceLayer.ValidationException;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class DaoImpl implements DaoInterface {
+public class OrderDaoImpl implements OrderDoa {
 
     List<Order> orderList = new ArrayList<>();
     
     @Override
-    public void addOrder(Order order) throws FileNotFoundException{
-        readOrderFile(order.getDate());
+    public void addOrder(Order order) throws ValidationException, PersistanceException{
+        //readOrderFile(order.getDate());
         orderList.add(order);
-        writeToDvdFile(order.getDate());
+        writeToOrderFile(order.getDate());
     }
     @Override
-    public Order getOrder(String orderDate, int orderNumber) {
-        Order order = null;
-        for (Order current: orderList){
-            if (current.getDate().equals(orderDate) && current.getOrderNumber() == orderNumber)
-                order = current;
-        }
-        return order;
-    }
-    @Override
-    public void removeOrder(Order order)throws FileNotFoundException {
-        readOrderFile(order.getDate());
+    public void removeOrder(Order order, String Date)throws ValidationException, PersistanceException{
+        //readOrderFile(Date);
         orderList.remove(order);
-        writeToDvdFile(order.getDate());
+        writeToOrderFile(Date);
     }
     @Override
-    public List<Order> orderList(String Date) throws FileNotFoundException{
+    public List<Order> ListAllOrders(String Date) throws ValidationException, PersistanceException{
         readOrderFile(Date);
         return orderList;
     }
+    public void editAndSave(Order newOrder) throws PersistanceException {
+        writeToOrderFile(newOrder.getDate());
+    }
+    
     
     public static final String DELIMITER = ",";
-    
-    //This reads a file and stores each line as a DVD.
     private Order unmarshalTxt(String Text){
         
-        String[] dividedTxt = Text.split(DELIMITER); //Array which stores the strings seperated by "::"
-        String orderID = dividedTxt[0]; //Saves the first index value in the array as the DVD ID
-        Order orderFromFile = new Order(Integer.parseInt(orderID)); //Since we have an ID, we can now create a DVD
+        String[] dividedTxt = Text.split(DELIMITER);
+        String orderID = dividedTxt[0];
+        Order orderFromFile = new Order(Integer.parseInt(orderID));
         
-        //These lines set the different attributes of our new DVD using the rest of the values in the array of strings from the file
         orderFromFile.setCustomerName(dividedTxt[1]);
         orderFromFile.setState(dividedTxt[2]);
-        orderFromFile.setTaxRate(dividedTxt[3]);
+        orderFromFile.setTaxRate(new BigDecimal(dividedTxt[3]));
         orderFromFile.setProductType(dividedTxt[4]);
-        orderFromFile.setArea(dividedTxt[5]);
-        orderFromFile.setCostPerSquareFoot(dividedTxt[6]);
-        orderFromFile.setLaborCostPerSquareFoot(dividedTxt[7]);
-        orderFromFile.setMaterialCost(dividedTxt[8]);
-        orderFromFile.setLaborCost(dividedTxt[9]);
-        orderFromFile.setTax(dividedTxt[10]);
-        orderFromFile.setTotal(dividedTxt[11]);
+        orderFromFile.setArea(new BigDecimal(dividedTxt[5]));
+        orderFromFile.setCostPerSquareFoot(new BigDecimal (dividedTxt[6]));
+        orderFromFile.setLaborCostPerSquareFoot(new BigDecimal (dividedTxt[7]));
+        orderFromFile.setMaterialCost(new BigDecimal (dividedTxt[8]));
+        orderFromFile.setLaborCost(new BigDecimal (dividedTxt[9]));
+        orderFromFile.setTax(new BigDecimal (dividedTxt[10]));
+        orderFromFile.setTotal(new BigDecimal (dividedTxt[11]));
         
-        return orderFromFile; //returns the new DVD
+        return orderFromFile;
     }
-    private void readOrderFile(String Date) throws FileNotFoundException {
+    private void readOrderFile(String Date) throws PersistanceException {
         
         Scanner scanner = null;
         
         try {
-            scanner = new Scanner (new BufferedReader(new FileReader("Orders_"+Date+".txt") ) );
-        } catch (FileNotFoundException e) {
-            e.addSuppressed(e);
+            scanner = new Scanner (new BufferedReader(new FileReader(Date) ) );
+        } catch (IOException e) {
+            throw new PersistanceException("Could not load Order File in memory.", e);
         }
         
-        String currentLine; //store each file line as a string
-        Order currentOrder; //each line in the file transelates to a DVD. So we need to declare an empty DVD variable.
-        orderList.removeAll(orderList); //clear the list, we dont want to add DVDs comming from the file with already existing DVDs in the list.
-        while(scanner.hasNext()){ //loops through the entire file to read all lines
-            currentLine = scanner.nextLine(); //stores the line file is currently reading
-            currentOrder = unmarshalTxt(currentLine); //uses the unmarshal method to make sense of the line and create a new DVD
-            orderList.add(currentOrder); //Add that DVD to a list
+        String currentLine;
+        Order currentOrder; 
+        orderList.removeAll(orderList);
+        scanner.nextLine();
+        while(scanner.hasNext()){ 
+            currentLine = scanner.nextLine();
+            currentOrder = unmarshalTxt(currentLine);
+            orderList.add(currentOrder);
         }
         scanner.close();
     }
     private String marshalTxt(Order order){
         
-        String OrderTxt = order.getOrderNumber() + DELIMITER;  //Get the current dvd id and concactinate with a delimiter(::).
-        
-        //Adds the rest of the dvd attributes to our first string that has the dvd id and the delimiter(::)
+        String OrderTxt = order.getOrderNumber() + DELIMITER; 
         OrderTxt += order.getCustomerName() + DELIMITER;
         OrderTxt += order.getState() + DELIMITER;
         OrderTxt += order.getTaxRate() + DELIMITER;
@@ -103,22 +95,23 @@ public class DaoImpl implements DaoInterface {
         OrderTxt += order.getTax() + DELIMITER;
         OrderTxt += order.getTotal() + DELIMITER;
         
-        return OrderTxt; //returns an entire string of text holding all attributes of a dvd
+        return OrderTxt;
     }
-    private void writeToDvdFile(String Date) throws FileNotFoundException {
+    private void writeToOrderFile(String Date) throws PersistanceException {
         
-        //Find the file and enter into it
         PrintWriter out = null;
-        try{
-            out = new PrintWriter( new FileWriter("Orders_"+Date+".txt"));
-        } catch (IOException e) {
-            e.addSuppressed(e);
-        }
         
+        try{
+            out = new PrintWriter( new FileWriter(Date));
+        } catch (IOException e) {
+            throw new PersistanceException("Could not write to Order File", e);
+        }
+        out.println
+        ("OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total");
         String OrderAsTxt;
-        for (Order current: orderList){ // for every dvd in our list
-            OrderAsTxt = marshalTxt(current); //format each dvd with the delimiters(::) using the marshal method and save is in the string variable
-            out.println(OrderAsTxt); //print that string variable to the file
+        for (Order current: orderList){
+            OrderAsTxt = marshalTxt(current);
+            out.println(OrderAsTxt);
             out.flush();
         }
         

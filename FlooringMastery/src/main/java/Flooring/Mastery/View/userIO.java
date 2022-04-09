@@ -16,4 +16,8 @@ public interface userIO {
     
     BigDecimal readBigDecimal(String prompt, int min, int max);
     
+    String readDate (String prompt);
+    
+    String readFutureDate(String prompt);
+    
 }

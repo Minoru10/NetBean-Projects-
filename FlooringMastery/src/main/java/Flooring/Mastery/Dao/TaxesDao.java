@@ -1,14 +1,12 @@
 
 package Flooring.Mastery.Dao;
 
-import Flooring.Mastery.Dto.Order;
-import Flooring.Mastery.ServiceLayer.FlooringPersistenceException;
-import java.io.FileNotFoundException;
+import Flooring.Mastery.Dto.Tax;
+import Flooring.Mastery.ServiceLayer.ValidationException;
 import java.util.List;
 
 
 public interface TaxesDao {
-      public List<String> getAllStates() throws FlooringPersistenceException, FileNotFoundException;
     
-    public Order stateDataEnter(Order order, String state) throws FlooringPersistenceException, FileNotFoundException;
+     List<Tax> ListAllTaxes() throws ValidationException, PersistanceException;
 }

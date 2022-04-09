@@ -1,164 +1,130 @@
 package Flooring.Mastery.Dto;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 public class Order {
     
-    private int orderNumber;
-    private String customerName;
-    private String state;
-    private BigDecimal taxRate = new BigDecimal("0");
-    private String productType;
-    private BigDecimal area = new BigDecimal("0");
-    private BigDecimal costPerSquareFoot = new BigDecimal("0");
-    private BigDecimal laborCostPerSquareFoot = new BigDecimal("0");
-    private BigDecimal materialCost = new BigDecimal("0");
-    private BigDecimal laborCost = new BigDecimal("0");
-    private BigDecimal tax = new BigDecimal("0");
-    private BigDecimal total = new BigDecimal("0");
+    private String Date;
+    private String CustomerName;
+    private String State;
+    private String ProductType;
+    private int OrderNumber;
+    private BigDecimal TaxRate;
+    private BigDecimal Area ;
+    private BigDecimal CostPerSquareFoot;
+    private BigDecimal LaborCostPerSquareFoot;
+    private BigDecimal MaterialCost ;
+    private BigDecimal LaborCost ;
+    private BigDecimal Tax;
+    private BigDecimal Total;
 
-    //special contructor that takes in order number which in this program is auto generated
-    public void setOrderNumber(int orderNumber) {
-        this.orderNumber = orderNumber;
+    public Order(int OrderNumber) {
+        this.OrderNumber = OrderNumber;
     }
-    
-    //getters/setters for each variable
-    
-    public int getOrderNumber() {
-        return orderNumber;
+
+    public String getDate() {
+        return Date;
+    }
+
+    public void setDate(String Date) {
+        this.Date = Date;
     }
 
     public String getCustomerName() {
-        return customerName;
+        return CustomerName;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setCustomerName(String CustomerName) {
+        this.CustomerName = CustomerName;
     }
 
     public String getState() {
-        return state;
+        return State;
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public BigDecimal getTaxRate() {
-        return taxRate;
-    }
-
-    public void setTaxRate(BigDecimal taxRate) {
-        this.taxRate = taxRate;
+    public void setState(String State) {
+        this.State = State;
     }
 
     public String getProductType() {
-        return productType;
+        return ProductType;
     }
 
-    public void setProductType(String productType) {
-        this.productType = productType;
+    public void setProductType(String ProductType) {
+        this.ProductType = ProductType;
+    }
+
+    public int getOrderNumber() {
+        return OrderNumber;
+    }
+
+    public void setOrderNumber(int OrderNumber) {
+        this.OrderNumber = OrderNumber;
+    }
+
+    public BigDecimal getTaxRate() {
+        return TaxRate;
+    }
+
+    public void setTaxRate(BigDecimal TaxRate) {
+        this.TaxRate = TaxRate;
     }
 
     public BigDecimal getArea() {
-        return area;
+        return Area;
     }
 
-    public void setArea(BigDecimal area) {
-        this.area = area;
+    public void setArea(BigDecimal Area) {
+        this.Area = Area;
     }
 
     public BigDecimal getCostPerSquareFoot() {
-        return costPerSquareFoot;
+        return CostPerSquareFoot;
     }
 
-    public void setCostPerSquareFoot(BigDecimal costPerSquareFoot) {
-        this.costPerSquareFoot = costPerSquareFoot;
+    public void setCostPerSquareFoot(BigDecimal CostPerSquareFoot) {
+        this.CostPerSquareFoot = CostPerSquareFoot;
     }
 
     public BigDecimal getLaborCostPerSquareFoot() {
-        return laborCostPerSquareFoot;
+        return LaborCostPerSquareFoot;
     }
 
-    public void setLaborCostPerSquareFoot(BigDecimal laborCostPerSquareFoot) {
-        this.laborCostPerSquareFoot = laborCostPerSquareFoot;
+    public void setLaborCostPerSquareFoot(BigDecimal LaborCostPerSquareFoot) {
+        this.LaborCostPerSquareFoot = LaborCostPerSquareFoot;
     }
 
     public BigDecimal getMaterialCost() {
-        return materialCost;
+        return MaterialCost;
     }
 
-    public void setMaterialCost(BigDecimal materialCost) {
-        this.materialCost = materialCost;
+    public void setMaterialCost(BigDecimal MaterialCost) {
+        this.MaterialCost = MaterialCost;
     }
 
     public BigDecimal getLaborCost() {
-        return laborCost;
+        return LaborCost;
     }
 
-    public void setLaborCost(BigDecimal laborCost) {
-        this.laborCost = laborCost;
+    public void setLaborCost(BigDecimal LaborCost) {
+        this.LaborCost = LaborCost;
     }
 
     public BigDecimal getTax() {
-        return tax;
+        return Tax;
     }
 
-    public void setTax(BigDecimal tax) {
-        this.tax = tax;
+    public void setTax(BigDecimal Tax) {
+        this.Tax = Tax;
     }
 
     public BigDecimal getTotal() {
-        return total;
+        return Total;
     }
 
-    public void setTotal(BigDecimal total) {
-        this.total = total;
+    public void setTotal(BigDecimal Total) {
+        this.Total = Total;
     }
     
-    
-    @Override
-    public String toString(){
-        return "Order Number: " + orderNumber + " Customer Name: " + customerName + " State: " + state + " Area: " + area + "sqft";
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + this.orderNumber;
-        hash = 17 * hash + Objects.hashCode(this.customerName);
-        hash = 17 * hash + Objects.hashCode(this.state);
-        hash = 17 * hash + Objects.hashCode(this.area);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Order other = (Order) obj;
-        if (this.orderNumber != other.orderNumber) {
-            return false;
-        }
-        if (!Objects.equals(this.customerName, other.customerName)) {
-            return false;
-        }
-        if (!Objects.equals(this.state, other.state)) {
-            return false;
-        }
-        if (!Objects.equals(this.area, other.area)) {
-            return false;
-        }
-        return true;
-    }
-
     
 }

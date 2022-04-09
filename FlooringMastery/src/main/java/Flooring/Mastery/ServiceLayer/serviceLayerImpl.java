@@ -1,213 +1,135 @@
 package Flooring.Mastery.ServiceLayer;
 
-import Flooring.Mastery.Dao.DaoImpl;
-import Flooring.Mastery.Dao.DaoInterface;
-import Flooring.Mastery.Dao.FlooringMasteryDao;
+import Flooring.Mastery.Dao.PersistanceException;
+import Flooring.Mastery.Dao.OrderDaoImpl;
 import Flooring.Mastery.Dto.Order;
 import Flooring.Mastery.Dto.Product;
-import java.io.FileNotFoundException;
+import Flooring.Mastery.Dto.Tax;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
+import java.util.stream.Collectors;
+import Flooring.Mastery.Dao.ProductDaoImpl;
+import Flooring.Mastery.Dao.TaxDaoImpl;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class serviceLayerImpl implements serviceLayerIO {
 
-//    DaoInterface Dao = new DaoImpl();
-//    
-//    @Override
-//    public Order addOrder(Order order) throws FileNotFoundException{
-//        //if (!Dao.orderList().contains(order))
-//            Dao.addOrder(order);
-//        
-//        return order;
-//    }
-//    
-//    @Override
-//    public Order editOrder(String orderDate, int orderNumber) {
-//        Order order = Dao.getOrder(orderDate, orderNumber);
-//        
-//        return order;
-//    }
-//
-//    @Override
-//    public Order removeOrder(String orderDate, int orderNumber) throws FileNotFoundException{
-//        Order order = Dao.getOrder(orderDate, orderNumber);
-//        Dao.removeOrder(order);
-//        
-//        return order;
-//    }
-    FlooringMasteryDao dao;
-    ProductsDao pDao;
-    TaxesDao tDao;
-    
-    public FlooringMasteryServiceLayerFileImpl(FlooringMasteryDao dao, ProductsDao pDao, TaxesDao tDao){
-        this.dao = dao;
-        this.pDao = pDao;
-        this.tDao = tDao;
+    OrderDaoImpl OrderDao;// = new OrderDaoImpl();
+    TaxDaoImpl TaxDao;// = new TaxDaoImpl();
+    ProductDaoImpl ProductDao;// = new ProductDaoImpl();
+
+    public serviceLayerImpl(OrderDaoImpl OrderDao, TaxDaoImpl TaxDao, ProductDaoImpl ProductDao) {
+        this.OrderDao = OrderDao;
+        this.TaxDao = TaxDao;
+        this.ProductDao = ProductDao;
     }
     
-    //calculates all the costs based on info in order
     @Override
-    public Order orderCalculations(Order order) {
-        if(order != null){
-            BigDecimal taxRate = order.getTaxRate();
-            BigDecimal area = order.getArea();
-            BigDecimal costPerSquareFoot = order.getCostPerSquareFoot();
-            BigDecimal laborCostPerSquareFoot = order.getLaborCostPerSquareFoot();
+    public Order addOrder(Order order, String Date) throws ValidationException, PersistanceException{
         
-            BigDecimal materialCost = area.multiply(costPerSquareFoot);
-            materialCost = materialCost.setScale(2,RoundingMode.HALF_UP);
-            order.setMaterialCost(materialCost);
-        
-            BigDecimal laborCost = area.multiply(laborCostPerSquareFoot);
-            laborCost = laborCost.setScale(2,RoundingMode.HALF_UP);
-            order.setLaborCost(laborCost);
-        
-            BigDecimal matLabCost = materialCost.add(laborCost);
-            BigDecimal hundred = new BigDecimal("100");
-            BigDecimal taxPart = taxRate.divide(hundred,2, RoundingMode.HALF_UP);
-            BigDecimal tax = matLabCost.multiply(taxPart);
-            tax = tax.setScale(2,RoundingMode.HALF_UP);
-            order.setTax(tax);
-        
-            BigDecimal total = materialCost.add(laborCost.add(tax));
-            total = total.setScale(2,RoundingMode.HALF_UP);
-            order.setTotal(total);
+        LocalDate now = LocalDate.now();
+        if (new File(Date).exists())
+            OrderDao.addOrder(order);
+        if (!new File(Date).exists())
+            throw new ValidationException ("Error: You entered a past date!!");
+        else 
+            try {
+                new File(Date).createNewFile();
+        } catch (IOException ex) {
+            throw new PersistanceException ("Error: Unable to Create the new File!!");
         }
         return order;
     }
-    
-    //gets all orders for a given date
     @Override
-    public List<Order> retrieveAllOrders(String orderText) throws FlooringPersistenceException, FileNotFoundException {
-        List<Order> orders = dao.getAllOrders(orderText);
-        return orders;
+    public void removeOrder(Order order, String date) throws ValidationException, PersistanceException{
+        OrderDao.removeOrder(order, date);
     }
-    
-    //gets all products
     @Override
-    public List<Product> retrieveAllProducts() throws FlooringPersistenceException, FileNotFoundException {
-        List<Product> products = pDao.getAllProducts();
-        return products;
+    public List<Order> ListAllOrders(String Date) throws ValidationException, PersistanceException{
+        return OrderDao.ListAllOrders(Date);
     }
-    
-    //gets all taxes/states
     @Override
-    public List<String> retrieveAllStates() throws FlooringPersistenceException, FileNotFoundException {
-        List<String> states = tDao.getAllStates();
-        return states;
+    public List<Product> ListProducts() throws ValidationException, PersistanceException {
+        return ProductDao.ListAllProducts();
     }
-    
-    //gets all product names
     @Override
-    public List<String> retrieveAllProductNames() throws FlooringPersistenceException, FileNotFoundException {
-        List<String> products = pDao.getAllProductNames();
-        return products;
+    public List<Tax> ListTaxes()throws ValidationException, PersistanceException {
+        return TaxDao.ListAllTaxes();
     }
-    
-    //adds order to a given dates list
     @Override
-    public Order addOrder(String orderText,int orderNumber, Order order) throws FlooringPersistenceException, FileNotFoundException{
-        Order orderAdded = dao.addOrder(orderText,orderNumber, order);
-        return orderAdded;
-    }
-    
-    //gets a single order based on date and order number
-    @Override
-    public Order retrieveOrder(String orderText, int orderNumber)throws FlooringPersistenceException, FileNotFoundException{
-        Order retrievedOrder = dao.getOrder(orderText, orderNumber);
-        return retrievedOrder;
-    }
-    
-    //assuming theyre accepts makes changes to an order
-    @Override
-    public Order updateOrder(String orderText, int orderNumber, Order order) throws FlooringPersistenceException, FileNotFoundException {
-        Order updatedOrder = dao.editOrder(orderText, orderNumber, order);
-        return updatedOrder;
-    }
-    
-    //removes an order
-    @Override
-    public Order deleteOrder(String orderText, int orderNumber) throws FlooringPersistenceException, FileNotFoundException{
-        Order removed = dao.removeOrder(orderText, orderNumber);
-        return removed;
-    }
-    
-    //gets state from tax file and enters data into order
-    @Override
-    public Order stateInfoEnter(Order order, String state) throws FlooringPersistenceException, FileNotFoundException{
-        Order updatedState = new Order();
-        if(order!=null){
-            updatedState = tDao.stateDataEnter(order, state);
-            return updatedState;
-        }
-        return null;
-    }
-    
-
-    
-    //enters product info into order
-    @Override
-    public Order productInfoEnter(Order order, String product) throws FlooringPersistenceException, FileNotFoundException{
-        Order updatedProduct = new Order();
-        if(order != null){    
-            updatedProduct = pDao.productDataEnter(order, product);
-            return updatedProduct;
-        }
-        return null;
-    }
-    
-    //checks that order num entered is valid
-    @Override
-    public boolean orderNumCheck(String orderText,int orderNum) throws FlooringPersistenceException, FileNotFoundException{
-        List<Integer> orderNums = dao.getOrderNumList(orderText);
-        boolean check = orderNums.contains(orderNum);
-        return check;
-    }
-    
-    //converst a valid date into a order text line
-    @Override
-    public String makeOrderText(String orderDate){
-        String orderText = "Orders_" + orderDate + ".txt";
-        return orderText;
-    }
-    
-    //checks that order file exists
-    @Override
-    public boolean fileCheck(String orderText){
-        boolean check = dao.fileExist(orderText);
-        return check;
-    }
-    
-    //clears hashmap so its empty before each load
-    @Override
-    public void clearHashMap(){
-        dao.clearHash();
-    }
-    
-    //creates order file if one doesnt exist
-    @Override
-    public void fileMake(String orderText)throws FlooringPersistenceException, FileNotFoundException {
-        dao.fileCreator(orderText);
-    }
-    
-    //auto generate order number for add class
-    public Order autoGenOrderNum(List<Order> orderList, Order currentOrder){
-        int orderNum = 0;
-        int maxNum = 0;
-        if(orderList.size()==0){
-            currentOrder.setOrderNumber(orderNum);
-            return currentOrder;
-        }else{
-            for(int i = 0; i < orderList.size(); i++){
-                if(orderNum < orderList.get(i).getOrderNumber()){
-                    maxNum = orderList.get(i).getOrderNumber();
-                }
+    public int generateOrderNumber(String date)throws ValidationException, PersistanceException{
+        int num = 0;
+        if (new File(date).exists()){
+            for (Order current: OrderDao.ListAllOrders(date) ){
+                if (num <= current.getOrderNumber())
+                    num = current.getOrderNumber()+1;
             }
-       }
-        maxNum++;
-        currentOrder.setOrderNumber(maxNum);
-        return currentOrder;
+        }else 
+            num = 1;
+        return num;
     }
-    
+    @Override
+    public void checkForFile(String date) throws ValidationException, PersistanceException{
+        LocalDate D2 = LocalDate.parse(date);
+        if (D2.isBefore(LocalDate.now())){
+            DateTimeFormatter formater = DateTimeFormatter.ofPattern("MMddyyyy");
+            String Date = formater.format(D2);
+            Date = "Orders_"+Date+".txt";
+            File temp = new File (Date);
+            if (!new File(Date).exists())
+                throw new ValidationException ("Error: You entered a past date that doesn't already exist");
+        }
+    }
+    @Override
+    public void editAndSave(Order newOrder, String Date) throws ValidationException, PersistanceException {
+        for (Order current: OrderDao.ListAllOrders(Date)){
+            if (current.getOrderNumber() == newOrder.getOrderNumber()){
+                current.setArea(newOrder.getArea());
+                current.setCustomerName(newOrder.getCustomerName());
+                current.setProductType(newOrder.getProductType());
+                current.setState(newOrder.getState());
+                current.setCostPerSquareFoot(newOrder.getCostPerSquareFoot());
+                current.setLaborCost(newOrder.getLaborCost());
+                current.setLaborCostPerSquareFoot(newOrder.getLaborCostPerSquareFoot());
+                current.setMaterialCost(newOrder.getMaterialCost());
+                current.setTaxRate(newOrder.getTaxRate());
+                current.setTax(newOrder.getTax());
+                current.setTotal(newOrder.getTotal());
+            }
+        }
+        OrderDao.editAndSave(newOrder);
+    }
+    @Override
+    public void validateOrderData (Order order) throws ValidationException, PersistanceException {
+    //Check that a valid name is entered 
+        if ( order.getCustomerName().equals(null) || order.getCustomerName().trim().length() == 0 || order.getCustomerName().isBlank() )
+            throw new ValidationException( "ERROR: Invalid input for customer name!");
+    //Check a valid state is entered
+        List<Tax> taxL = TaxDao.ListAllTaxes().stream()
+                           .filter(T -> T.getStateAbbrv().equals(order.getState()))
+                           .collect(Collectors.toList());
+        if (taxL.isEmpty())
+            throw new ValidationException ("ERROR: We do not sell in that state!");
+        for (Tax current: taxL){
+            order.setTaxRate(current.getTaxRate());
+        }
+   //Check that user inters product from product list
+        BigDecimal Rate = order.getTaxRate().divide(new BigDecimal(100));
+        List<Product> productL = ProductDao.ListAllProducts().stream()
+                           .filter(P -> P.getProductType().equals(order.getProductType()))
+                           .collect(Collectors.toList());
+        if (productL.isEmpty())
+            throw new ValidationException ("ERROR: Product type not in List!");
+        for (Product current: productL){ //Does Product Calculations
+                order.setCostPerSquareFoot(current.getCostPerSquareFoot());
+                order.setLaborCostPerSquareFoot(current.getLaborCostPerSquareFoot());
+                order.setMaterialCost( order.getArea().multiply(order.getCostPerSquareFoot()) );
+                order.setLaborCost( order.getArea().multiply(order.getLaborCostPerSquareFoot()) );
+                order.setTax( order.getMaterialCost().add(order.getLaborCost()).multiply(Rate) );
+                order.setTotal( order.getMaterialCost().add(order.getLaborCost().add(order.getTax())) );
+        }
+    }
 }

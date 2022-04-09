@@ -1,17 +1,15 @@
 package Flooring.Mastery.Dao;
 
 import Flooring.Mastery.Dto.Order;
-import java.io.FileNotFoundException;
+import Flooring.Mastery.ServiceLayer.ValidationException;
 import java.util.List;
 
-public interface DaoInterface {
+public interface OrderDoa {
     
-    void addOrder(Order order)throws FileNotFoundException;
+    void addOrder(Order order)throws ValidationException, PersistanceException;
     
-    Order getOrder (String orderDate, int OrderNumber); // method to add a DVD
+    void removeOrder(Order order, String date) throws ValidationException, PersistanceException;
     
-    void removeOrder (Order order)throws FileNotFoundException; // remove an order
-    
-    List<Order> orderList (String Date)throws FileNotFoundException;
+    List<Order> ListAllOrders (String Date) throws ValidationException, PersistanceException;
     
 }

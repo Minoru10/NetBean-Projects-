@@ -11,4 +11,13 @@
         <exec.mainClass>tongwa.flooringmastery.FlooringMastery</exec.mainClass>
     </properties>
     <name>Flooring Mastery</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.2.2.RELEASE</version>
+        </dependency>
+    </dependencies>
+    
+    
 </project>
