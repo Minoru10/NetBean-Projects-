@@ -1,0 +1,42 @@
+DROP DATABASE IF EXISTS vinylrecordshop;
+
+CREATE DATABASE vinylrecordshop;
+
+USE vinylrecordshop;
+
+CREATE TABLE album (
+    albumId INT AUTO_INCREMENT,
+    albumTitle VARCHAR(100) NOT NULL,
+    label VARCHAR(50),
+    releaseDate DATE,
+    price DECIMAL(5,2),
+    CONSTRAINT pk_album 
+        PRIMARY KEY (albumId)
+);
+
+CREATE TABLE artist (
+    artistId INT AUTO_INCREMENT,
+    artistFirstName VARCHAR(25)
+    artistLastName VARCHAR(25) NOT NULL,
+    CONSTRAINT
+        PRIMARY KEY (artistId)
+);
+
+CREATE TABLE band (
+    bandId INT AUTO_INCREMENT,
+    bandName VARCHAR(50) NOT NULL,
+    CONSTRAINT
+        PRIMARY KEY (bandId)
+);
+
+CREATE TABLE song (
+    songId INT NOT NULL AUTO_INCREMENT,
+    songTitle VARCHAR(100) NOT NULL,
+    videoUrl VARCHAR(100),
+    bandId
+    CONSTRAINT
+    	PRIMARY KEY (songId)
+    CONTRAINT
+	FOREIGN KEY (bandId)
+	REFERENCE band (bandId)
+);

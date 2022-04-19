@@ -1,0 +1,17 @@
+2022-03-23T11:03:34.670424300 : Snack Honey Bun was vended
+2022-03-23T11:03:58.799389300 : Snack Skittles was vended
+2022-03-23T11:24:58.542764900 : Snack Pretzils was vended
+2022-03-23T12:12:47.078958100 : Snack Skittles was vended
+2022-03-23T12:13:19.317527700 : Snack Pretzils was vended
+2022-03-23T12:14:25.951354400 : Snack Dorito was vended
+2022-03-23T12:14:55.217377600 : Snack Honey Bun was vended
+2022-03-23T12:18:09.111964700 : Snack Pretzils was vended
+2022-03-23T12:18:22.415406 : Snack Honey Bun was vended
+2022-03-23T12:19:43.688054300 : Snack Honey Bun was vended
+2022-03-23T12:20:41.370265900 : Snack Honey Bun was vended
+2022-03-24T15:12:31.649897300 : Snack Honey Bun was vended
+2022-03-24T15:16:13.424945900 : Snack Pretzils was vended
+2022-03-25T10:42:35.657583800 : Snack Pretzils was vended
+2022-03-25T13:52:01.474404600 : Snack Honey Bun was vended
+2022-04-01T12:48:55.805331800 : Snack Dorito was vended
+2022-04-01T12:50:01.574963900 : Snack Dorito was vended
